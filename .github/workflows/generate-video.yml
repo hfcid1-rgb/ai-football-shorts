@@ -1,0 +1,68 @@
+name: Generate Cinematic Football Short
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Generation mode"
+        required: true
+        default: "test"
+        type: choice
+        options:
+          - test
+          - full
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Validate reference image
+        run: npm run check:reference
+
+      - name: Validate Runway secret
+        env:
+          RUNWAYML_API_SECRET: ${{ secrets.RUNWAYML_API_SECRET }}
+        run: |
+          if [ -z "$RUNWAYML_API_SECRET" ]; then
+            echo "RUNWAYML_API_SECRET is missing"
+            exit 1
+          fi
+          echo "Runway secret is configured"
+
+      - name: Generate video
+        env:
+          RUNWAYML_API_SECRET: ${{ secrets.RUNWAYML_API_SECRET }}
+        run: |
+          if [ "${{ inputs.mode }}" = "full" ]; then
+            npm run generate:full
+          else
+            npm run generate:test
+          fi
+
+      - name: Post-process video
+        run: npm run postprocess
+
+      - name: Upload generated video
+        uses: actions/upload-artifact@v4
+        with:
+          name: football-short-${{ inputs.mode }}
+          path: output/
+          if-no-files-found: error
