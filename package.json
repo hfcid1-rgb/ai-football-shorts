@@ -1,0 +1,20 @@
+{
+  "name": "ai-cinematic-football-shorts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fictional AI-generated cinematic football Shorts pipeline (Runway API + FFmpeg + GitHub Actions).",
+  "type": "module",
+  "scripts": {
+    "check:reference": "node scripts/check-reference.js",
+    "generate:test": "node scripts/generate.js --mode=test",
+    "generate:full": "node scripts/generate.js --mode=full",
+    "postprocess": "node scripts/postprocess.js"
+  },
+  "dependencies": {
+    "@runwayml/sdk": "^2.6.0",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

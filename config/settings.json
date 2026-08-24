@@ -1,0 +1,50 @@
+{
+  "runway": {
+    "apiVersionHeader": "2024-11-06",
+    "model": "gen4_turbo",
+    "ratio": "720:1280",
+    "clipDurationSeconds": 2,
+    "pollIntervalMs": 5000,
+    "pollTimeoutMs": 600000
+  },
+  "referenceImagePath": "assets/reference/character.png",
+  "output": {
+    "rawClipsDir": "output/raw",
+    "finalDir": "output/final",
+    "finalFilename": "al-ahly-vs-enppi-ai-short.mp4",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "testMode": {
+    "sceneId": "test_shot",
+    "maxClips": 1
+  },
+  "fullMode": {
+    "maxClips": 13
+  },
+  "overlays": [
+    {
+      "text": "AL AHLY",
+      "start": 0.5,
+      "duration": 2.5,
+      "position": "top"
+    },
+    {
+      "text": "GOOOAL!",
+      "start": 21,
+      "duration": 3,
+      "position": "center"
+    },
+    {
+      "text": "AI FOOTBALL CINEMATIC",
+      "start": 25.5,
+      "duration": 3,
+      "position": "bottom"
+    }
+  ],
+  "audio": {
+    "optionalTrackPath": "assets/audio/track.mp3",
+    "targetLoudnessLUFS": -14
+  }
+}

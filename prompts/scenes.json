@@ -1,0 +1,104 @@
+{
+  "globalStyle": "premium sports-commercial aesthetic, cinematic sports photography, realistic pitch lighting, dynamic tracking camera, shallow depth of field, subtle motion blur, packed stadium crowd, dramatic floodlights, night football stadium atmosphere, stylized 3D animated character aesthetic, same curly black hair, same face, red Al Ahly-style football kit, black shorts, consistent proportions, fictional AI-generated football scene",
+  "globalNegativePrompt": "face mutation, extra fingers, extra limbs, missing limbs, duplicated players, distorted football, changing character identity, random jersey change, warped hands, blurry face, text, watermark, logo distortion, low quality, deformed, unreadable text, subtitles, captions",
+  "testMode": {
+    "id": "test_shot",
+    "camera": "close-up",
+    "prompt": "Close-up cinematic shot of the character standing on the pitch at night, dramatic floodlights behind him, packed crowd blurred in the background, gentle idle motion, ball at his feet, confident smile, premium sports-commercial aesthetic, shallow depth of field",
+    "durationSeconds": 2,
+    "purpose": "Validates Runway connectivity and character consistency before spending credits on the full sequence."
+  },
+  "fullSequence": [
+    {
+      "id": "scene_01_establishing",
+      "order": 1,
+      "camera": "low tracking camera",
+      "prompt": "Cinematic wide establishing shot of a packed night football stadium, dramatic floodlights, confetti in the air, crowd roaring, low tracking camera slowly gliding across the pitch, premium sports-commercial atmosphere",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_02_attack_enter",
+      "order": 2,
+      "camera": "sideline tracking shot",
+      "prompt": "The character enters the attacking phase controlling the football, sideline tracking camera running alongside him, dynamic energetic football movement, night stadium lighting, motion blur on the grass",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_03_dribble",
+      "order": 3,
+      "camera": "low tracking camera",
+      "prompt": "The character dribbles dynamically toward the opposing penalty area, quick footwork, low tracking camera close to the ground, floodlights flaring, crowd blurred in background",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_04_defenders",
+      "order": 4,
+      "camera": "behind-player angle",
+      "prompt": "Behind-player angle as opposing defenders in dark kits attempt to close him down, tense defensive pressure, dynamic footwork, stadium atmosphere, cinematic sports photography",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_05_closeup_control",
+      "order": 5,
+      "camera": "close-up",
+      "prompt": "Dynamic close-up of the character's face and feet controlling the football under floodlights, intense focused expression, shallow depth of field, subtle motion blur",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_06_prepare_shot",
+      "order": 6,
+      "camera": "goal-facing camera",
+      "prompt": "Goal-facing camera as the character plants his foot and winds up for a powerful shot, dramatic lighting, muscles tensed, crowd roaring in the blurred background",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_07_slowmo_strike",
+      "order": 7,
+      "camera": "slow-motion shot moment",
+      "prompt": "Dramatic slow-motion shot of the character striking the football with full power, floodlight flare, grass particles kicked up, cinematic slow motion, premium sports-commercial aesthetic",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_08_ball_travel",
+      "order": 8,
+      "camera": "goal-facing camera",
+      "prompt": "The football travels rapidly through the night air toward the goal, dramatic tracking shot following the ball, floodlights streaking, tension building",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_09_keeper_dive",
+      "order": 9,
+      "camera": "goal-facing camera",
+      "prompt": "The opposing goalkeeper dives dramatically to try to stop the shot, dynamic sports photography, motion blur, intense night stadium lighting",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_10_goal",
+      "order": 10,
+      "camera": "close-up",
+      "prompt": "The football hits the back of the net in a spectacular goal moment, net rippling dramatically, floodlights bright, cinematic slow motion accent",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_11_crowd",
+      "order": 11,
+      "camera": "sideline tracking shot",
+      "prompt": "The stadium crowd erupts in celebration, waving flags and flares, packed stands, dramatic floodlights, wide sweeping tracking camera across the stands",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_12_celebration",
+      "order": 12,
+      "camera": "close-up",
+      "prompt": "The character celebrates enthusiastically on the pitch, arms raised, joyful expression, confetti falling, dramatic floodlights, premium sports-commercial aesthetic",
+      "durationSeconds": 2
+    },
+    {
+      "id": "scene_13_hero_shot",
+      "order": 13,
+      "camera": "celebration hero shot",
+      "prompt": "Cinematic final hero shot of the character standing triumphantly on the pitch, low angle, dramatic floodlights behind him, crowd blurred and roaring, confetti drifting, premium sports-commercial aesthetic, epic closing frame",
+      "durationSeconds": 2
+    }
+  ]
+}
