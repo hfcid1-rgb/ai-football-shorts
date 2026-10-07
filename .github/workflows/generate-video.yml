@@ -12,27 +12,42 @@ on:
           - test
           - full
 
+# Least privilege: the job only needs to read the repo. The GITHUB_TOKEN
+# cannot push, open PRs, or modify anything else.
+permissions:
+  contents: read
+
+# Never run two expensive generations at once.
+concurrency:
+  group: generate-video
+  cancel-in-progress: false
+
 jobs:
   generate:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        # --ignore-scripts blocks install-time scripts from dependencies
+        # (a common supply-chain attack vector).
+        run: npm ci --ignore-scripts
 
       - name: Install FFmpeg
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y --no-install-recommends ffmpeg
 
       - name: Validate reference image
         run: npm run check:reference
@@ -50,8 +65,9 @@ jobs:
       - name: Generate video
         env:
           RUNWAYML_API_SECRET: ${{ secrets.RUNWAYML_API_SECRET }}
+          MODE: ${{ inputs.mode }}
         run: |
-          if [ "${{ inputs.mode }}" = "full" ]; then
+          if [ "$MODE" = "full" ]; then
             npm run generate:full
           else
             npm run generate:test
@@ -61,8 +77,9 @@ jobs:
         run: npm run postprocess
 
       - name: Upload generated video
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: football-short-${{ inputs.mode }}
           path: output/
           if-no-files-found: error
+          retention-days: 7
