@@ -63,6 +63,59 @@ function imageToDataUri(filePath) {
   return `data:${mime};base64,${buf.toString("base64")}`;
 }
 
+// Hard limits for downloading generated clips from the network.
+const MAX_DOWNLOAD_BYTES = 200 * 1024 * 1024; // 200 MB per clip
+const DOWNLOAD_TIMEOUT_MS = 120_000;
+
+/**
+ * Downloads a generated clip defensively: HTTPS only, no redirects to
+ * other protocols, bounded time and size, and a sanity check that the
+ * response really is a video. Untrusted network data never gets more
+ * than MAX_DOWNLOAD_BYTES of disk/memory.
+ */
+async function downloadVideo(videoUrl, label) {
+  let url;
+  try {
+    url = new URL(videoUrl);
+  } catch {
+    throw new Error(`Invalid output URL for ${label}`);
+  }
+  if (url.protocol !== "https:") {
+    throw new Error(`Refusing non-HTTPS download for ${label} (${url.protocol})`);
+  }
+
+  const res = await fetch(url, {
+    redirect: "follow",
+    signal: AbortSignal.timeout(DOWNLOAD_TIMEOUT_MS),
+  });
+  if (!res.ok) {
+    throw new Error(`Download failed for ${label}: HTTP ${res.status}`);
+  }
+  if (new URL(res.url).protocol !== "https:") {
+    throw new Error(`Download for ${label} was redirected to a non-HTTPS URL`);
+  }
+
+  const type = (res.headers.get("content-type") || "").toLowerCase();
+  if (type && !type.startsWith("video/") && !type.startsWith("application/octet-stream")) {
+    throw new Error(`Unexpected content-type for ${label}: ${type}`);
+  }
+  const declared = Number(res.headers.get("content-length") || 0);
+  if (declared > MAX_DOWNLOAD_BYTES) {
+    throw new Error(`Clip for ${label} is too large (${declared} bytes)`);
+  }
+
+  const chunks = [];
+  let total = 0;
+  for await (const chunk of res.body) {
+    total += chunk.length;
+    if (total > MAX_DOWNLOAD_BYTES) {
+      throw new Error(`Clip for ${label} exceeded ${MAX_DOWNLOAD_BYTES} bytes`);
+    }
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
+}
+
 function buildScenePrompt(scene) {
   const style = scenes.globalStyle;
   return { promptText: `${scene.prompt}. ${style}` };
@@ -98,14 +151,12 @@ async function generateClip(client, referenceDataUri, scene, outDir) {
     throw new Error(`No output URL returned for scene ${scene.id}`);
   }
 
-  const res = await fetch(videoUrl);
-  if (!res.ok) {
-    throw new Error(`Download failed for ${scene.id}: HTTP ${res.status}`);
-  }
-  const buf = Buffer.from(await res.arrayBuffer());
+  const buf = await downloadVideo(videoUrl, scene.id);
 
   fs.mkdirSync(outDir, { recursive: true });
-  const outPath = path.join(outDir, `${String(scene.order ?? 0).padStart(2, "0")}_${scene.id}.mp4`);
+  // Scene ids end up in a file path; strip anything that could escape outDir.
+  const safeId = String(scene.id).replace(/[^a-zA-Z0-9_-]/g, "_");
+  const outPath = path.join(outDir, `${String(scene.order ?? 0).padStart(2, "0")}_${safeId}.mp4`);
   fs.writeFileSync(outPath, buf);
   console.log(`OK: saved ${outPath}`);
   return outPath;
